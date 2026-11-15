@@ -14,6 +14,8 @@ def get_instruction(mode):
 mode = input("What mode would you like: ")
 instruction = get_instruction(mode)
 
+history = []
+
 while True:
     sentence = input("Your sentence: ")
     if sentence.lower() == "quit":
@@ -24,9 +26,11 @@ while True:
         continue
 
     prompt = instruction + " Message: " + sentence
+    history.append({"role": "user", "content": prompt})
     response = ollama.chat(
         model="qwen3.5:4b",
-        messages=[{"role": "user", "content": prompt}],
+        messages=history,
         think=False,
     )
     print(response.message.content)
+    history.append({"role": "assistant", "content": response.message.content})
